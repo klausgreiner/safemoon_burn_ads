@@ -50,7 +50,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
 
   @override
   Future<void> didChangeDependencies() async {
-    await getRedditPost();
+    getRedditPost();
     _loadRewardedAd();
     super.didChangeDependencies();
   }
