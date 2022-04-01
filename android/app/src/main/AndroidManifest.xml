@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.greiner.safemoon_burn_ads">
    <application
-        android:label="safemoon_burn_ads"
+        android:label="Safemoon Burn Ads"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
          <meta-data

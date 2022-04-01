@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "498836578472",
+    "project_id": "safemoon-burn",
+    "storage_bucket": "safemoon-burn.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498836578472:android:1dfa02ad2346a2ae32629d",
+        "android_client_info": {
+          "package_name": "com.greiner.safemoon_burn_ads"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498836578472-9e4lq5r0i594hjor4vmuribrs4ffoohh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl_Y1pj8kgFJiU8BxtbFduhUY_BV7TGXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498836578472-9e4lq5r0i594hjor4vmuribrs4ffoohh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
