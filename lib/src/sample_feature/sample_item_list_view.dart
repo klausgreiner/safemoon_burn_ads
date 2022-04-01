@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -23,10 +24,14 @@ class _SampleItemListViewState extends State<SampleItemListView> {
   List<String> _currentPost = [];
   dynamic _Posts = [];
   int indexCurrentPost = 2;
+  FirebaseRemoteConfig? _remoteConfig;
+  String remoteConfigString = "";
+  double? remoteConfigNumber;
 
   @override
   void initState() {
     super.initState();
+    _remoteConfig = FirebaseRemoteConfig.instance;
     _bannerAd = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       request: AdRequest(),
@@ -48,11 +53,36 @@ class _SampleItemListViewState extends State<SampleItemListView> {
     _bannerAd.load();
   }
 
+  num get getAmountRaised => _remoteConfig?.getDouble('ads_money') ?? 0;
+  String get getStringValue => _remoteConfig?.getString('quick_news') ?? "";
+  Future _fetchAndActivate() async {
+    bool updated = await _remoteConfig?.fetchAndActivate() ?? false;
+    if (updated || getStringValue.isNotEmpty) {
+      setState(() {
+        remoteConfigString = getStringValue;
+        remoteConfigNumber = getAmountRaised.toDouble();
+      });
+    }
+  }
+
   @override
   Future<void> didChangeDependencies() async {
-    getRedditPost();
+    _remoteConfig?.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 3),
+        minimumFetchInterval: const Duration(seconds: 30)));
+    fetchAllData();
     _loadRewardedAd();
     super.didChangeDependencies();
+  }
+
+  Future fetchAllData() async {
+    remoteConfigString = "";
+    remoteConfigNumber = null;
+    _Posts = [];
+    _currentPost = [];
+    indexCurrentPost = 2;
+    getRedditPost();
+    _fetchAndActivate();
   }
 
   @override
@@ -82,8 +112,6 @@ class _SampleItemListViewState extends State<SampleItemListView> {
         indexCurrentPost++;
       }
     });
-
-    // print(indexCurrentPost.toString() + ' ' + _Posts.length.toString());
     setCurrentPost();
   }
 
@@ -97,8 +125,6 @@ class _SampleItemListViewState extends State<SampleItemListView> {
         indexCurrentPost--;
       }
     });
-
-    // print(indexCurrentPost.toString() + ' ' + _Posts.length.toString());
     setCurrentPost();
   }
 
@@ -139,6 +165,13 @@ class _SampleItemListViewState extends State<SampleItemListView> {
           actions: [
             IconButton(
               icon: const Icon(
+                Icons.refresh,
+                color: Color(0xFF04998F),
+              ),
+              onPressed: () => fetchAllData(),
+            ),
+            IconButton(
+              icon: const Icon(
                 Icons.info,
                 color: Color(0xFF04998F),
               ),
@@ -153,7 +186,31 @@ class _SampleItemListViewState extends State<SampleItemListView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 16),
+            remoteConfigString.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Announcement: ' + remoteConfigString,
+                        style: const TextStyle(
+                            color: Color(0xFF04998F),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
+                  )
+                : Container(),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                  'So far We raised/burned: \$' + remoteConfigNumber.toString(),
+                  style: const TextStyle(
+                      color: Color(0xFF04998F),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+            ),
+            const Text('This value has yet to be bought in Safemoon',
+                style: TextStyle(
+                  color: Color(0xFF04998F),
+                  fontSize: 10,
+                )),
+            const SizedBox(height: 16),
             if (_isBannerAdReady)
               Align(
                 alignment: Alignment.topCenter,
@@ -163,15 +220,15 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                   child: AdWidget(ad: _bannerAd),
                 ),
               ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             FloatingActionButton.extended(
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Let\'s burn some safemoon?'),
-                      content: Text('Watch an Ad to BUUUUURN safemoon!'),
+                      title: const Text('Let\'s burn some safemoon?'),
+                      content: const Text('Watch an Ad to BUUUUURN safemoon!'),
                       actions: [
                         TextButton(
                           child: Text('cancel'.toUpperCase()),
@@ -194,10 +251,10 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                   },
                 );
               },
-              label: Text('Click to watch a video'),
-              icon: Icon(Icons.fireplace),
+              label: const Text('Click to watch a video'),
+              icon: const Icon(Icons.fireplace),
             ),
-            Padding(padding: EdgeInsets.all(8)),
+            const Padding(padding: EdgeInsets.all(8)),
             Row(
               children: [
                 TextButton(
@@ -216,15 +273,13 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                     ),
                   ]),
                 ),
-                Spacer(
-                  flex: 1,
-                ),
+                const Spacer(flex: 1),
                 RichText(
                   text: TextSpan(
                     children: [
                       TextSpan(
                         text: 'Go to Post',
-                        style: TextStyle(color: Colors.blue),
+                        style: const TextStyle(color: Colors.blue),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             launch(_currentPost[3]);
