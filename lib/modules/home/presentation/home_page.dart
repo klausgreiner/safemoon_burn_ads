@@ -1,5 +1,6 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:safemoon_burn_ads/modules/core/admob/ad_helper.dart';
 import 'package:safemoon_burn_ads/modules/core/constants/core_assets.dart';
@@ -87,7 +88,10 @@ class _HomeState extends State<Home> {
                 Image.asset(CoreAssets.icLogo, height: 32),
                 const Padding(
                   padding: EdgeInsets.only(left: 12),
-                  child: Text(CoreStrings.title),
+                  child: Text(
+                    CoreStrings.title,
+                    style: TextStyle(color: CoreColors.sfmMainColor),
+                  ),
                 ),
               ],
             ),
@@ -115,19 +119,24 @@ class _HomeState extends State<Home> {
             ]),
         body: TabBarView(
           children: [
-            adTab(
-                isBannerReady: isBannerReady,
-                isRewardedAdReady: isRewardedAdReady,
-                store: _store,
-                bannerAd: bannerAd,
-                rewardedAd: rewardedAd,
-                interstitialRewardedAd: interstitialRewardedAd,
-                onAdRewarded: (RewardItem reward) {
-                  print(reward);
-                  //send to firebase store and record amount of reward
-                }),
-            redditTab(store: _store),
-            RankingTab(store: _store),
+            Observer(
+                builder: (_) => adTab(
+                    isBannerReady: isBannerReady,
+                    isRewardedAdReady: isRewardedAdReady,
+                    store: _store,
+                    bannerAd: bannerAd,
+                    rewardedAd: rewardedAd,
+                    interstitialRewardedAd: interstitialRewardedAd,
+                    onAdRewarded: (RewardItem reward) {
+                      print(reward);
+                      _store.adsWatched += reward.amount;
+                      _store.updateFirestore();
+                      //send to firebase store and record amount of reward
+                    },
+                    setUserName: (String name, String password, bool newUser) =>
+                        _store.setUserName(name, password, newUser))),
+            Observer(builder: (_) => redditTab(store: _store)),
+            Observer(builder: (_) => RankingTab(store: _store)),
           ],
         ),
       ),

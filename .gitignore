@@ -47,3 +47,5 @@ app.*.map.json
 
 key.properties
 app/upload-keystore.jks
+
+ad_helper.dart

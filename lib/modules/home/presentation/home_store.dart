@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
 import 'package:safemoon_burn_ads/modules/home/domain/models/post_model.dart';
@@ -26,6 +28,27 @@ abstract class _HomeStore with Store {
   double? remoteConfigNumber;
 
   int indexCurrentPost = 2;
+
+  @observable
+  num adsWatched = 0;
+
+  @observable
+  String? userName;
+  @observable
+  String? password;
+
+  get averageSafemoonBurnedPerAds =>
+      (adsWatched * getAdAverageValue) / getSafemoonValue;
+  @action
+  setUserName(name, password, newUser) {
+    newUser
+        ? createUser(name, password)
+        : fetchuserScore(
+            name,
+            password,
+          );
+  }
+
   @action
   Future fetchAllData() async {
     loading = true;
@@ -38,6 +61,8 @@ abstract class _HomeStore with Store {
     _fetchAndActivate();
   }
 
+  num get getSafemoonValue => remoteConfig?.getDouble('safemoon_value') ?? 0;
+  num get getAdAverageValue => remoteConfig?.getDouble('cpm') ?? 0.01;
   num get getAmountRaised => remoteConfig?.getDouble('ads_money') ?? 0;
   num get getAmountBurned => remoteConfig?.getDouble('burnt_money') ?? 0;
 
@@ -96,5 +121,59 @@ abstract class _HomeStore with Store {
     bool isValidImg =
         (url?.contains('.jpg') ?? false) || (url?.contains('.png') ?? false);
     return isValidImg ? url : null;
+  }
+
+  @action
+  fetchuserScore(name, password) async {
+    try {
+      var doc = FirebaseFirestore.instance
+          .collection("users")
+          .where('name', isEqualTo: name)
+          .where('password', isEqualTo: password)
+          .snapshots();
+
+      doc.listen((data) {
+        if (data.docs.isNotEmpty) {
+          adsWatched = int.parse(data.docs.first['score'] ?? 0);
+          userName = data.docs.first['name'];
+          password = data.docs.first['password'];
+        } else {
+          //wrong password
+          Fluttertoast.showToast(
+              gravity: ToastGravity.TOP,
+              msg: "Invalid Username or Password",
+              timeInSecForIosWeb: 3);
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  createUser(name, password) {
+    FirebaseFirestore.instance.collection('users').add({
+      'name': name,
+      'password': password,
+      'score': 0,
+    });
+    userName = name;
+    this.password = password;
+    adsWatched = 0;
+  }
+
+  updateFirestore() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .where('name', isEqualTo: userName)
+        .where('password', isEqualTo: password)
+        .get()
+        .then((data) {
+      if (data.docs.isNotEmpty) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(data.docs.first.id)
+            .update({'score': adsWatched.toString()});
+      }
+    });
   }
 }

@@ -54,6 +54,51 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  final _$adsWatchedAtom = Atom(name: '_HomeStore.adsWatched');
+
+  @override
+  num get adsWatched {
+    _$adsWatchedAtom.reportRead();
+    return super.adsWatched;
+  }
+
+  @override
+  set adsWatched(num value) {
+    _$adsWatchedAtom.reportWrite(value, super.adsWatched, () {
+      super.adsWatched = value;
+    });
+  }
+
+  final _$userNameAtom = Atom(name: '_HomeStore.userName');
+
+  @override
+  String? get userName {
+    _$userNameAtom.reportRead();
+    return super.userName;
+  }
+
+  @override
+  set userName(String? value) {
+    _$userNameAtom.reportWrite(value, super.userName, () {
+      super.userName = value;
+    });
+  }
+
+  final _$passwordAtom = Atom(name: '_HomeStore.password');
+
+  @override
+  String? get password {
+    _$passwordAtom.reportRead();
+    return super.password;
+  }
+
+  @override
+  set password(String? value) {
+    _$passwordAtom.reportWrite(value, super.password, () {
+      super.password = value;
+    });
+  }
+
   final _$fetchAllDataAsyncAction = AsyncAction('_HomeStore.fetchAllData');
 
   @override
@@ -76,7 +121,26 @@ mixin _$HomeStore on _HomeStore, Store {
     return _$getRedditPostAsyncAction.run(() => super.getRedditPost());
   }
 
+  final _$fetchuserScoreAsyncAction = AsyncAction('_HomeStore.fetchuserScore');
+
+  @override
+  Future fetchuserScore(dynamic name, dynamic password) {
+    return _$fetchuserScoreAsyncAction
+        .run(() => super.fetchuserScore(name, password));
+  }
+
   final _$_HomeStoreActionController = ActionController(name: '_HomeStore');
+
+  @override
+  dynamic setUserName(dynamic name, dynamic password, dynamic newUser) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setUserName');
+    try {
+      return super.setUserName(name, password, newUser);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic getNextPost() {
@@ -105,7 +169,10 @@ mixin _$HomeStore on _HomeStore, Store {
     return '''
 currentPost: ${currentPost},
 loading: ${loading},
-posts: ${posts}
+posts: ${posts},
+adsWatched: ${adsWatched},
+userName: ${userName},
+password: ${password}
     ''';
   }
 }
