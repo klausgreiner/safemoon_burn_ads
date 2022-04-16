@@ -39,6 +39,7 @@ abstract class _HomeStore with Store {
   }
 
   num get getAmountRaised => remoteConfig?.getDouble('ads_money') ?? 0;
+  num get getAmountBurned => remoteConfig?.getDouble('burnt_money') ?? 0;
 
   String get getStringValue => remoteConfig?.getString('quick_news') ?? "";
 

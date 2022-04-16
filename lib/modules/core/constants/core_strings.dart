@@ -2,7 +2,8 @@ class CoreStrings {
   CoreStrings._();
 
   static const String title = "Safemoon Burn by Ads";
-  static const String raisedMoney = "So far We raised/burned: \$";
+  static const String raisedMoney = "Raised: US\$ ";
+  static const String burnedMoney = "Burned: US\$ ";
   static const String warningText = "First buy will happen on may 1st!";
   static const String watchVideoButton = "Click to watch a video";
   static const String lastPostButton = "Last Post";
@@ -15,4 +16,5 @@ class CoreStrings {
   static const String dialogClose = 'Close';
   static const String goToLinkButton = 'Go to Post';
   static const String redditLink = 'https://www.reddit.com';
+  static const String watchInterstitialButton = 'Click to watch Interstitial';
 }
