@@ -10,27 +10,37 @@ environment:
   sdk: ">=2.16.2 <3.0.0"
 
 dependencies:
+  dio: ^4.0.6
   firebase_core: ^1.14.0
   firebase_remote_config: ^2.0.3
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_modular: ^4.5.1+1
   google_mobile_ads: ^1.1.0
+  path_provider: ^2.0.9
   http: ^0.13.4
+  mobx: ^2.0.6+1
   url_launcher: ^6.0.20
+  equatable: ^2.0.3
+  json_annotation: ^4.4.0
+  flutter_mobx: ^2.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^1.0.0
+  mobx_codegen:
+  build_runner:
+  json_serializable: ^6.1.6
 
 flutter:
   uses-material-design: true
 
   # Enable generation of localized Strings from arb files.
-  generate: true
+  generate: false
 
   assets:
     # Add assets from the images directory to the application.
-    - assets/images/
+    - assets/
