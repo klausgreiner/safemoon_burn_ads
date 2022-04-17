@@ -192,7 +192,7 @@ abstract class _HomeStore with Store {
         FirebaseFirestore.instance
             .collection('users')
             .doc(data.docs.first.id)
-            .update({'score': adsWatched.toString()});
+            .update({'score': adsWatched});
         updateScoreSharedPref();
       }
     });
