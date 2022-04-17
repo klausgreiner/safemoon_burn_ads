@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:safemoon_burn_ads/modules/core/constants/core_colors.dart';
 import 'package:safemoon_burn_ads/modules/core/constants/core_strings.dart';
+import 'package:safemoon_burn_ads/modules/home/presentation/components/ad_button.dart';
 import 'package:safemoon_burn_ads/modules/home/presentation/home_store.dart';
 
 class adTab extends StatefulWidget {
@@ -32,7 +33,11 @@ class adTab extends StatefulWidget {
   State<adTab> createState() => _adTabState();
 }
 
-class _adTabState extends State<adTab> {
+class _adTabState extends State<adTab>
+    with AutomaticKeepAliveClientMixin<adTab> {
+  @override
+  bool get wantKeepAlive => true;
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool obscureText = true;
@@ -127,28 +132,30 @@ class _adTabState extends State<adTab> {
   }
 
   Widget getInterstitialAd() {
-    return FloatingActionButton.extended(
-      onPressed: () {
+    return AdButton(
+      cooldown: 600,
+      icon: Icons.monetization_on,
+      text: CoreStrings.watchInterstitialButton,
+      onPressedFunction: () {
         widget.interstitialRewardedAd?.show(
             onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
           widget.onAdRewarded(reward);
         });
       },
-      label: const Text(CoreStrings.watchInterstitialButton),
-      icon: const Icon(Icons.monetization_on),
     );
   }
 
   Widget getRewardedVideoAd() {
-    return FloatingActionButton.extended(
-      onPressed: () {
+    return AdButton(
+      cooldown: 60,
+      icon: Icons.fireplace,
+      text: CoreStrings.watchVideoButton,
+      onPressedFunction: () {
         widget.rewardedAd?.show(
             onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
           widget.onAdRewarded(reward);
         });
       },
-      label: const Text(CoreStrings.watchVideoButton),
-      icon: const Icon(Icons.fireplace),
     );
   }
 
