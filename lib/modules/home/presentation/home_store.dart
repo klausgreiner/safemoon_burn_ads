@@ -165,11 +165,11 @@ abstract class _HomeStore with Store {
           User(name: name, password: password, score: adsWatched.toInt()));
       _user.listen((data) {
         if (data.docs.isNotEmpty) {
-          adsWatched = data.docs.first['score'] ?? 0;
           userName = data.docs.first['name'];
           password = data.docs.first['password'];
           updateNameSharedPref(userName ?? '');
           updatePasswordSharedPref(password ?? '');
+          updateHigherScore(adsWatched, data.docs.first['score'] ?? 0);
         } else {
           Fluttertoast.showToast(
               gravity: ToastGravity.TOP,
@@ -249,5 +249,16 @@ abstract class _HomeStore with Store {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getRanking() {
     return firestoreService.getUsers();
+  }
+
+  Future updateHigherScore(num adsWatched, int firebaseScore) async {
+    if (adsWatched > firebaseScore) {
+      await firestoreService.updateUserScore(User(
+          name: userName ?? '',
+          password: password ?? '',
+          score: adsWatched.toInt()));
+    } else {
+      await updateScoreSharedPref(adsWatched.toInt());
+    }
   }
 }
