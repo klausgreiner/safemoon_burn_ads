@@ -133,7 +133,7 @@ class _adTabState extends State<adTab>
 
   Widget getInterstitialAd() {
     return AdButton(
-      cooldown: 600,
+      cooldown: 120,
       icon: Icons.monetization_on,
       text: CoreStrings.watchInterstitialButton,
       onPressedFunction: () {
