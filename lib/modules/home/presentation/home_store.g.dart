@@ -248,6 +248,61 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
+  dynamic setSafemoonValue() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setSafemoonValue');
+    try {
+      return super.setSafemoonValue();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setAdAverageValue() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setAdAverageValue');
+    try {
+      return super.setAdAverageValue();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setAmountRaised() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setAmountRaised');
+    try {
+      return super.setAmountRaised();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setAmountBurned() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setAmountBurned');
+    try {
+      return super.setAmountBurned();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setAnnouncementValue() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setAnnouncementValue');
+    try {
+      return super.setAnnouncementValue();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic getNextPost() {
     final _$actionInfo = _$_HomeStoreActionController.startAction(
         name: '_HomeStore.getNextPost');
