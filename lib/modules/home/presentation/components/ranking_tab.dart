@@ -19,6 +19,7 @@ class _RankingTabState extends State<RankingTab> {
         body: SingleChildScrollView(
       child: Column(
         children: [
+          const SizedBox(height: 8),
           const Text(
             'Ranking',
             style: TextStyle(
@@ -38,39 +39,42 @@ class _RankingTabState extends State<RankingTab> {
                   : ListView.builder(
                       shrinkWrap: true,
                       itemCount: streamSnapshot.data?.docs.length ?? 0,
-                      itemBuilder: (ctx, index) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 36.0, vertical: 6.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            color: CoreColors.backgroundChipColor,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                streamSnapshot.data?.docs[index]['name'],
-                                style: const TextStyle(
-                                  color: CoreColors.sfmMainColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                      itemBuilder: (ctx, index) {
+                        int _score = streamSnapshot.data?.docs[index]['score'];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 36.0, vertical: 6.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(12.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              color: CoreColors.backgroundChipColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  streamSnapshot.data?.docs[index]['name'],
+                                  style: const TextStyle(
+                                    color: CoreColors.sfmMainColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                streamSnapshot.data?.docs[index]['score'],
-                                style: const TextStyle(
-                                  color: CoreColors.sfmMainColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                Text(
+                                  _score.toString(),
+                                  style: const TextStyle(
+                                    color: CoreColors.sfmMainColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              getMedal(index),
-                            ],
+                                getMedal(index),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     );
             },
           ),

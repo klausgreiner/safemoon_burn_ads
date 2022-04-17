@@ -1,6 +1,7 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:safemoon_burn_ads/modules/core/admob/ad_helper.dart';
 import 'package:safemoon_burn_ads/modules/core/constants/core_assets.dart';
@@ -19,7 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late final HomeStore _store = HomeStore();
+  final HomeStore _store = Modular.get();
   late BannerAd bannerAd;
   bool isBannerReady = false;
   RewardedAd? rewardedAd;
@@ -59,6 +60,7 @@ class _HomeState extends State<Home> {
     _loadInterstitialRewardedAd();
     _loadRewardedAd();
     _store.fetchAllData();
+    await _store.fetchUserData();
     super.didChangeDependencies();
   }
 

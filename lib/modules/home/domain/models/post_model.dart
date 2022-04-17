@@ -10,14 +10,17 @@ class Post extends Equatable {
   @JsonKey(name: 'url_overridden_by_dest')
   final String? img;
   final String? description;
+  final String? selftext;
   @JsonKey(name: 'permalink')
   final String? link;
 
-  const Post(this.title, this.thumbnail, this.img, this.description, this.link);
+  const Post(this.title, this.thumbnail, this.img, this.description,
+      this.selftext, this.link);
 
   factory Post.fromJson(Map<String, dynamic> json) =>
       _$PostFromJson(json["data"]);
 
   @override
-  List<Object?> get props => [title, thumbnail, img, description, link];
+  List<Object?> get props =>
+      [title, thumbnail, img, description, selftext, link];
 }

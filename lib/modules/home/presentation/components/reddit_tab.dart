@@ -113,6 +113,8 @@ class _redditTabState extends State<redditTab> {
                   const SizedBox(height: 16),
                   if (widget.store.currentPost?.description != null)
                     Text(widget.store.currentPost?.description ?? ""),
+                  if (widget.store.currentPost?.selftext != null)
+                    Text(widget.store.currentPost?.selftext ?? ""),
                   if (widget.store.imageFromPost != null)
                     Image.network(widget.store.imageFromPost),
                 ]),

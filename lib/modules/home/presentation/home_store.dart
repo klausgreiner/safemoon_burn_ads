@@ -5,6 +5,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
+import 'package:safemoon_burn_ads/modules/core/data/shared_preferences_repository.dart';
 import 'package:safemoon_burn_ads/modules/home/domain/models/post_model.dart';
 
 part 'home_store.g.dart';
@@ -12,7 +13,9 @@ part 'home_store.g.dart';
 class HomeStore = _HomeStore with _$HomeStore;
 
 abstract class _HomeStore with Store {
-  _HomeStore();
+  final SharedPreferencesRepositoryImpl sharedPreferencesRepositoryImpl;
+
+  _HomeStore(this.sharedPreferencesRepositoryImpl);
 
   FirebaseRemoteConfig? remoteConfig;
 
@@ -134,9 +137,11 @@ abstract class _HomeStore with Store {
 
       doc.listen((data) {
         if (data.docs.isNotEmpty) {
-          adsWatched = int.parse(data.docs.first['score'] ?? 0);
+          adsWatched = data.docs.first['score'] ?? 0;
           userName = data.docs.first['name'];
           password = data.docs.first['password'];
+          updateNameSharedPref();
+          updatePasswordSharedPref();
         } else {
           //wrong password
           Fluttertoast.showToast(
@@ -151,14 +156,29 @@ abstract class _HomeStore with Store {
   }
 
   createUser(name, password) {
-    FirebaseFirestore.instance.collection('users').add({
-      'name': name,
-      'password': password,
-      'score': 0,
+    var doc = FirebaseFirestore.instance.collection('users');
+    doc.where('name', isEqualTo: name).get().then((data) {
+      if (data.docs.isNotEmpty) {
+        Fluttertoast.showToast(
+            gravity: ToastGravity.TOP,
+            msg: "Username already exists",
+            timeInSecForIosWeb: 3);
+      } else {
+        doc.add({
+          'name': name,
+          'password': password,
+          'score': 0,
+        });
+
+        userName = name;
+        this.password = password;
+        adsWatched = 0;
+
+        updateNameSharedPref();
+        updatePasswordSharedPref();
+        updateScoreSharedPref();
+      }
     });
-    userName = name;
-    this.password = password;
-    adsWatched = 0;
   }
 
   updateFirestore() {
@@ -173,7 +193,26 @@ abstract class _HomeStore with Store {
             .collection('users')
             .doc(data.docs.first.id)
             .update({'score': adsWatched.toString()});
+        updateScoreSharedPref();
       }
     });
+  }
+
+  updateScoreSharedPref() async {
+    await sharedPreferencesRepositoryImpl.setScore(adsWatched.toInt());
+  }
+
+  updateNameSharedPref() async {
+    await sharedPreferencesRepositoryImpl.setuserName(userName ?? '');
+  }
+
+  updatePasswordSharedPref() async {
+    await sharedPreferencesRepositoryImpl.setPassword(password ?? '');
+  }
+
+  fetchUserData() async {
+    userName = await sharedPreferencesRepositoryImpl.getuserName();
+    password = await sharedPreferencesRepositoryImpl.getPassword();
+    adsWatched = await sharedPreferencesRepositoryImpl.getScore() ?? 0;
   }
 }

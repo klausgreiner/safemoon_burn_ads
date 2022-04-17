@@ -11,6 +11,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       json['thumbnail'] as String?,
       json['url_overridden_by_dest'] as String?,
       json['description'] as String?,
+      json['selftext'] as String?,
       json['permalink'] as String?,
     );
 
@@ -19,5 +20,6 @@ Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'thumbnail': instance.thumbnail,
       'url_overridden_by_dest': instance.img,
       'description': instance.description,
+      'selftext': instance.selftext,
       'permalink': instance.link,
     };
