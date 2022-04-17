@@ -30,12 +30,12 @@ abstract class _HomeStore with Store {
   bool loadingAd = false;
 
   @observable
+  bool loadingFull = false;
+
+  @observable
   List posts = [];
 
-  String remoteConfigString = "";
-  double? remoteConfigNumber;
-
-  int indexCurrentPost = 2;
+  int indexCurrentPost = 0;
 
   @observable
   num adsWatched = 0;
@@ -45,8 +45,22 @@ abstract class _HomeStore with Store {
   @observable
   String? password;
 
+  @observable
+  num safemoonValue = 0;
+
+  @observable
+  num adAverageValue = 0;
+
+  @observable
+  num amountRaised = 0;
+
+  @observable
+  num amountBurned = 0;
+  @observable
+  String announcement = "";
+
   get averageSafemoonBurnedPerAds =>
-      (adsWatched * getAdAverageValue) / getSafemoonValue;
+      (adsWatched * adAverageValue) / safemoonValue;
   @action
   setUserName(name, password, newUser) {
     loadingAd = true;
@@ -60,30 +74,42 @@ abstract class _HomeStore with Store {
 
   @action
   Future fetchAllData() async {
-    loading = true;
-    remoteConfigString = "";
-    remoteConfigNumber = null;
+    loadingFull = true;
     posts = [];
     currentPost = null;
-    indexCurrentPost = 2;
-    getRedditPost();
-    _fetchAndActivate();
+    indexCurrentPost = 0;
+    await getRedditPost();
+    await _fetchAndActivate();
+    await fetchuserScore(
+      userName,
+      password,
+    );
+    loadingFull = false;
   }
 
-  num get getSafemoonValue => remoteConfig?.getDouble('safemoon_value') ?? 0;
-  num get getAdAverageValue => remoteConfig?.getDouble('cpm') ?? 0.01;
-  num get getAmountRaised => remoteConfig?.getDouble('ads_money') ?? 0;
-  num get getAmountBurned => remoteConfig?.getDouble('burnt_money') ?? 0;
-
-  String get getStringValue => remoteConfig?.getString('quick_news') ?? "";
+  @action
+  setSafemoonValue() =>
+      safemoonValue = remoteConfig?.getDouble('safemoon_value') ?? 0;
+  @action
+  setAdAverageValue() =>
+      adAverageValue = remoteConfig?.getDouble('cpm') ?? 0.01;
+  @action
+  setAmountRaised() => amountRaised = remoteConfig?.getDouble('ads_money') ?? 0;
+  @action
+  setAmountBurned() =>
+      amountBurned = remoteConfig?.getDouble('burnt_money') ?? 0;
+  @action
+  setAnnouncementValue() =>
+      announcement = remoteConfig?.getString('quick_news') ?? "";
 
   @action
   Future _fetchAndActivate() async {
-    bool updated = await remoteConfig?.fetchAndActivate() ?? false;
-    if (updated || getStringValue.isNotEmpty) {
-      remoteConfigString = getStringValue;
-      remoteConfigNumber = getAmountRaised.toDouble();
-    }
+    await remoteConfig?.fetchAndActivate() ?? false;
+    setSafemoonValue();
+    setAdAverageValue();
+    setAmountRaised();
+    setAmountBurned();
+    setAnnouncementValue();
   }
 
   @action
@@ -108,7 +134,7 @@ abstract class _HomeStore with Store {
   @action
   getNextPost() {
     if (indexCurrentPost == posts.length - 1) {
-      indexCurrentPost = 2;
+      indexCurrentPost = 0;
     } else {
       indexCurrentPost++;
     }
@@ -117,7 +143,7 @@ abstract class _HomeStore with Store {
 
   @action
   getPreviousPost() {
-    if (indexCurrentPost == 2) {
+    if (indexCurrentPost == 0) {
       indexCurrentPost = posts.length - 1;
     } else {
       indexCurrentPost--;

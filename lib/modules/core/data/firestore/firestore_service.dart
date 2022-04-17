@@ -43,7 +43,6 @@ class FirestoreService {
       await _db
           .collection('users')
           .where('name', isEqualTo: user.name)
-          .where('password', isEqualTo: user.password)
           .get()
           .then((data) {
         if (data.docs.isNotEmpty) {

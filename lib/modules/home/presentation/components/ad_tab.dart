@@ -71,7 +71,7 @@ class _adTabState extends State<adTab> {
   }
 
   getAnnouncement() {
-    return widget.store.remoteConfigString.isNotEmpty
+    return widget.store.announcement.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
@@ -80,7 +80,7 @@ class _adTabState extends State<adTab> {
                 borderRadius: BorderRadius.circular(24),
                 color: CoreColors.backgroundChipColor,
               ),
-              child: Text(widget.store.remoteConfigString,
+              child: Text(widget.store.announcement,
                   style: const TextStyle(
                       color: CoreColors.sfmMainColor,
                       fontSize: 12,
@@ -102,7 +102,7 @@ class _adTabState extends State<adTab> {
           ),
           child: Text(
               CoreStrings.raisedMoney +
-                  widget.store.getAmountRaised.toStringAsFixed(2),
+                  widget.store.amountRaised.toStringAsFixed(2),
               style: const TextStyle(
                   color: CoreColors.sfmMainColor,
                   fontSize: 18,
@@ -116,7 +116,7 @@ class _adTabState extends State<adTab> {
           ),
           child: Text(
               CoreStrings.burnedMoney +
-                  widget.store.getAmountBurned.toStringAsFixed(2),
+                  widget.store.amountBurned.toStringAsFixed(2),
               style: const TextStyle(
                   color: CoreColors.sfmMainColor,
                   fontSize: 18,

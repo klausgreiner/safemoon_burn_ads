@@ -119,24 +119,30 @@ class _HomeState extends State<Home> {
                 },
               ),
             ]),
-        body: TabBarView(
-          children: [
-            Observer(
-                builder: (_) => adTab(
-                    isBannerReady: isBannerReady,
-                    isRewardedAdReady: isRewardedAdReady,
-                    store: _store,
-                    bannerAd: bannerAd,
-                    rewardedAd: rewardedAd,
-                    interstitialRewardedAd: interstitialRewardedAd,
-                    onAdRewarded: (RewardItem reward) {
-                      _store.updateScore(reward.amount);
-                    },
-                    setUserName: (String name, String password, bool newUser) =>
-                        _store.setUserName(name, password, newUser))),
-            Observer(builder: (_) => redditTab(store: _store)),
-            Observer(builder: (_) => RankingTab(store: _store)),
-          ],
+        body: Observer(
+          builder: (_) {
+            return _store.loadingFull
+                ? const Center(child: CircularProgressIndicator())
+                : TabBarView(
+                    children: [
+                      adTab(
+                          isBannerReady: isBannerReady,
+                          isRewardedAdReady: isRewardedAdReady,
+                          store: _store,
+                          bannerAd: bannerAd,
+                          rewardedAd: rewardedAd,
+                          interstitialRewardedAd: interstitialRewardedAd,
+                          onAdRewarded: (RewardItem reward) {
+                            _store.updateScore(reward.amount);
+                          },
+                          setUserName:
+                              (String name, String password, bool newUser) =>
+                                  _store.setUserName(name, password, newUser)),
+                      Observer(builder: (_) => redditTab(store: _store)),
+                      Observer(builder: (_) => RankingTab(store: _store)),
+                    ],
+                  );
+          },
         ),
       ),
     );

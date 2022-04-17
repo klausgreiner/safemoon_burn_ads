@@ -54,6 +54,21 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  final _$loadingFullAtom = Atom(name: '_HomeStore.loadingFull');
+
+  @override
+  bool get loadingFull {
+    _$loadingFullAtom.reportRead();
+    return super.loadingFull;
+  }
+
+  @override
+  set loadingFull(bool value) {
+    _$loadingFullAtom.reportWrite(value, super.loadingFull, () {
+      super.loadingFull = value;
+    });
+  }
+
   final _$postsAtom = Atom(name: '_HomeStore.posts');
 
   @override
@@ -111,6 +126,81 @@ mixin _$HomeStore on _HomeStore, Store {
   set password(String? value) {
     _$passwordAtom.reportWrite(value, super.password, () {
       super.password = value;
+    });
+  }
+
+  final _$safemoonValueAtom = Atom(name: '_HomeStore.safemoonValue');
+
+  @override
+  num get safemoonValue {
+    _$safemoonValueAtom.reportRead();
+    return super.safemoonValue;
+  }
+
+  @override
+  set safemoonValue(num value) {
+    _$safemoonValueAtom.reportWrite(value, super.safemoonValue, () {
+      super.safemoonValue = value;
+    });
+  }
+
+  final _$adAverageValueAtom = Atom(name: '_HomeStore.adAverageValue');
+
+  @override
+  num get adAverageValue {
+    _$adAverageValueAtom.reportRead();
+    return super.adAverageValue;
+  }
+
+  @override
+  set adAverageValue(num value) {
+    _$adAverageValueAtom.reportWrite(value, super.adAverageValue, () {
+      super.adAverageValue = value;
+    });
+  }
+
+  final _$amountRaisedAtom = Atom(name: '_HomeStore.amountRaised');
+
+  @override
+  num get amountRaised {
+    _$amountRaisedAtom.reportRead();
+    return super.amountRaised;
+  }
+
+  @override
+  set amountRaised(num value) {
+    _$amountRaisedAtom.reportWrite(value, super.amountRaised, () {
+      super.amountRaised = value;
+    });
+  }
+
+  final _$amountBurnedAtom = Atom(name: '_HomeStore.amountBurned');
+
+  @override
+  num get amountBurned {
+    _$amountBurnedAtom.reportRead();
+    return super.amountBurned;
+  }
+
+  @override
+  set amountBurned(num value) {
+    _$amountBurnedAtom.reportWrite(value, super.amountBurned, () {
+      super.amountBurned = value;
+    });
+  }
+
+  final _$announcementAtom = Atom(name: '_HomeStore.announcement');
+
+  @override
+  String get announcement {
+    _$announcementAtom.reportRead();
+    return super.announcement;
+  }
+
+  @override
+  set announcement(String value) {
+    _$announcementAtom.reportWrite(value, super.announcement, () {
+      super.announcement = value;
     });
   }
 
@@ -185,10 +275,16 @@ mixin _$HomeStore on _HomeStore, Store {
 currentPost: ${currentPost},
 loading: ${loading},
 loadingAd: ${loadingAd},
+loadingFull: ${loadingFull},
 posts: ${posts},
 adsWatched: ${adsWatched},
 userName: ${userName},
-password: ${password}
+password: ${password},
+safemoonValue: ${safemoonValue},
+adAverageValue: ${adAverageValue},
+amountRaised: ${amountRaised},
+amountBurned: ${amountBurned},
+announcement: ${announcement}
     ''';
   }
 }
