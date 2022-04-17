@@ -1,4 +1,4 @@
-import 'package:safemoon_burn_ads/modules/core/data/shared_preferences_core.dart';
+import 'package:safemoon_burn_ads/modules/core/data/shared_preferences/shared_preferences_core.dart';
 
 abstract class SharedPreferencesRepository {
   Future setuserName(String data);

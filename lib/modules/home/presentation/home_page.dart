@@ -130,10 +130,7 @@ class _HomeState extends State<Home> {
                     rewardedAd: rewardedAd,
                     interstitialRewardedAd: interstitialRewardedAd,
                     onAdRewarded: (RewardItem reward) {
-                      print(reward);
-                      _store.adsWatched += reward.amount;
-                      _store.updateFirestore();
-                      //send to firebase store and record amount of reward
+                      _store.updateScore(reward.amount);
                     },
                     setUserName: (String name, String password, bool newUser) =>
                         _store.setUserName(name, password, newUser))),

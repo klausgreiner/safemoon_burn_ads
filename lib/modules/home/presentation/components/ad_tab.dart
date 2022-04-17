@@ -275,37 +275,39 @@ class _adTabState extends State<adTab> {
             onSubmitted: (String value) => handleLogin(false),
           ),
           const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  padding: const EdgeInsets.all(12.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    color: CoreColors.backgroundChipColor,
-                  ),
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: () => handleLogin(true),
-                    child: const Text(CoreStrings.createAccountButton),
-                  )),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  color: CoreColors.sfmMainColor,
+          widget.store.loadingAd
+              ? const Center(child: CircularProgressIndicator())
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.all(12.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: CoreColors.backgroundChipColor,
+                        ),
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () => handleLogin(true),
+                          child: const Text(CoreStrings.createAccountButton),
+                        )),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        color: CoreColors.sfmMainColor,
+                      ),
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () => handleLogin(false),
+                        child: const Text(
+                          CoreStrings.submitButton,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: () => handleLogin(false),
-                  child: const Text(
-                    CoreStrings.submitButton,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

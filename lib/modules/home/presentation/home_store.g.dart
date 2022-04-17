@@ -39,6 +39,21 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  final _$loadingAdAtom = Atom(name: '_HomeStore.loadingAd');
+
+  @override
+  bool get loadingAd {
+    _$loadingAdAtom.reportRead();
+    return super.loadingAd;
+  }
+
+  @override
+  set loadingAd(bool value) {
+    _$loadingAdAtom.reportWrite(value, super.loadingAd, () {
+      super.loadingAd = value;
+    });
+  }
+
   final _$postsAtom = Atom(name: '_HomeStore.posts');
 
   @override
@@ -169,6 +184,7 @@ mixin _$HomeStore on _HomeStore, Store {
     return '''
 currentPost: ${currentPost},
 loading: ${loading},
+loadingAd: ${loadingAd},
 posts: ${posts},
 adsWatched: ${adsWatched},
 userName: ${userName},

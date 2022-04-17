@@ -29,10 +29,7 @@ class _RankingTabState extends State<RankingTab> {
             ),
           ),
           StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection("users")
-                .orderBy('score', descending: true)
-                .snapshots(),
+            stream: widget.store.getRanking(),
             builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
               return !streamSnapshot.hasData
                   ? const Center(child: CircularProgressIndicator())
