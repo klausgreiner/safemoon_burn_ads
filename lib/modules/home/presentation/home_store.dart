@@ -62,14 +62,11 @@ abstract class _HomeStore with Store {
   get averageSafemoonBurnedPerAds =>
       (adsWatched * adAverageValue) / safemoonValue;
   @action
-  setUserName(name, password, newUser) {
+  setUserName(name, _password, newUser) {
     loadingAd = true;
-    newUser
-        ? createUser(name, password)
-        : fetchuserScore(
-            name,
-            password,
-          );
+    userName = name;
+    password = _password;
+    newUser ? createUser() : fetchuserScore();
   }
 
   @action
@@ -80,10 +77,7 @@ abstract class _HomeStore with Store {
     indexCurrentPost = 0;
     await getRedditPost();
     await _fetchAndActivate();
-    await fetchuserScore(
-      userName,
-      password,
-    );
+    await fetchuserScore();
     loadingFull = false;
   }
 
@@ -159,26 +153,31 @@ abstract class _HomeStore with Store {
   }
 
   @action
-  fetchuserScore(name, password) async {
+  fetchuserScore() async {
     try {
-      var _user = firestoreService.fetchUserScore(
-          User(name: name, password: password, score: adsWatched.toInt()));
-      _user.listen((data) {
-        if (data.docs.isNotEmpty) {
-          userName = data.docs.first['name'];
-          password = data.docs.first['password'];
-          updateNameSharedPref(userName ?? '');
-          updatePasswordSharedPref(password ?? '');
-          updateHigherScore(adsWatched, data.docs.first['score'] ?? 0);
-        } else {
-          Fluttertoast.showToast(
-              gravity: ToastGravity.TOP,
-              msg: "Invalid Username or Password",
-              timeInSecForIosWeb: 3);
-        }
-      });
+      if (userName == null || password == null) {
+        throw Exception("Please enter a valid username and password");
+      } else {
+        var _user = firestoreService.fetchUserScore(User(
+            name: userName!, password: password!, score: adsWatched.toInt()));
+        _user.listen((data) {
+          if (data.docs.isNotEmpty) {
+            userName = data.docs.first['name'];
+            password = data.docs.first['password'];
+            updateNameSharedPref(userName ?? '');
+            updatePasswordSharedPref(password ?? '');
+            updateHigherScore(adsWatched, data.docs.first['score'] ?? 0);
+          } else {
+            Fluttertoast.showToast(
+                gravity: ToastGravity.TOP,
+                msg: "Invalid Username or Password",
+                timeInSecForIosWeb: 3);
+          }
+        });
+      }
     } catch (e) {
-      print(e);
+      Fluttertoast.showToast(
+          gravity: ToastGravity.TOP, msg: e.toString(), timeInSecForIosWeb: 3);
     } finally {
       loadingAd = false;
     }
@@ -203,25 +202,31 @@ abstract class _HomeStore with Store {
     }
   }
 
-  createUser(name, password) async {
+  createUser() async {
     try {
-      var result = await firestoreService.createUser(
-          User(name: name, password: password, score: adsWatched.toInt()));
-      if (result) {
-        await updateNameSharedPref(name);
-        await updatePasswordSharedPref(password);
-        await updateScoreSharedPref(adsWatched.toInt());
-        Fluttertoast.showToast(
-            gravity: ToastGravity.BOTTOM,
-            msg: "Username created, happy Farming!!!",
-            timeInSecForIosWeb: 3);
+      if (userName == null || password == null) {
+        throw Exception("Please enter a valid username and password");
       } else {
-        Fluttertoast.showToast(
-            gravity: ToastGravity.TOP,
-            msg: "Username already exists",
-            timeInSecForIosWeb: 3);
+        var result = await firestoreService.createUser(User(
+            name: userName!, password: password!, score: adsWatched.toInt()));
+        if (result) {
+          await updateNameSharedPref(userName!);
+          await updatePasswordSharedPref(password!);
+          await updateScoreSharedPref(adsWatched.toInt());
+          Fluttertoast.showToast(
+              gravity: ToastGravity.BOTTOM,
+              msg: "Username created, happy Farming!!!",
+              timeInSecForIosWeb: 3);
+        } else {
+          Fluttertoast.showToast(
+              gravity: ToastGravity.TOP,
+              msg: "Username already exists",
+              timeInSecForIosWeb: 3);
+        }
       }
     } catch (e) {
+      Fluttertoast.showToast(
+          gravity: ToastGravity.TOP, msg: e.toString(), timeInSecForIosWeb: 3);
       print(e);
     } finally {
       loadingAd = false;
@@ -244,7 +249,7 @@ abstract class _HomeStore with Store {
     userName = await sharedPreferencesRepositoryImpl.getuserName();
     password = await sharedPreferencesRepositoryImpl.getPassword();
     adsWatched = await sharedPreferencesRepositoryImpl.getScore() ?? 0;
-    fetchuserScore(userName, password);
+    fetchuserScore();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getRanking() {
@@ -257,8 +262,9 @@ abstract class _HomeStore with Store {
           name: userName ?? '',
           password: password ?? '',
           score: adsWatched.toInt()));
-    } else {
-      await updateScoreSharedPref(adsWatched.toInt());
+    } else if (firebaseScore > adsWatched) {
+      this.adsWatched = firebaseScore;
+      await updateScoreSharedPref(firebaseScore);
     }
   }
 }

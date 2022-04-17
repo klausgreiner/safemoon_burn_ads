@@ -229,19 +229,18 @@ mixin _$HomeStore on _HomeStore, Store {
   final _$fetchuserScoreAsyncAction = AsyncAction('_HomeStore.fetchuserScore');
 
   @override
-  Future fetchuserScore(dynamic name, dynamic password) {
-    return _$fetchuserScoreAsyncAction
-        .run(() => super.fetchuserScore(name, password));
+  Future fetchuserScore() {
+    return _$fetchuserScoreAsyncAction.run(() => super.fetchuserScore());
   }
 
   final _$_HomeStoreActionController = ActionController(name: '_HomeStore');
 
   @override
-  dynamic setUserName(dynamic name, dynamic password, dynamic newUser) {
+  dynamic setUserName(dynamic name, dynamic _password, dynamic newUser) {
     final _$actionInfo = _$_HomeStoreActionController.startAction(
         name: '_HomeStore.setUserName');
     try {
-      return super.setUserName(name, password, newUser);
+      return super.setUserName(name, _password, newUser);
     } finally {
       _$_HomeStoreActionController.endAction(_$actionInfo);
     }
